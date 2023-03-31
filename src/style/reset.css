@@ -6,3 +6,8 @@
   font-weight: inherit;
   color: inherit;
 }
+
+ol,
+ul {
+  list-style: none;
+}
