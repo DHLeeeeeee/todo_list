@@ -1,0 +1,72 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 400px;
+  height: 600px;
+  background-color: yellow;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: blue;
+  color: #fff;
+}
+
+.header h1 {
+  font-size: 24px;
+}
+
+.addTodo {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: green;
+}
+
+.todo {
+  flex: 1;
+  margin: 0px 10px 10px;
+  overflow: scroll;
+  background-color: yellow;
+
+  /* 스크롤 숨기기 */
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
+}
+
+.todo::-webkit-scrollbar {
+  display: none; /* 크롬, 사파리, 오페라, 엣지 */
+}
+
+.todoList {
+  overflow: hidden;
+}
+
+.todoItm {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.todoMenu {
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  right: 0;
+}
+
+.clearMenu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: red;
+}
