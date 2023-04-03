@@ -53,7 +53,7 @@ const Todo = () => {
     }
   `;
 
-  const Input = styled.div`
+  const Input = styled.form`
     display: flex;
     justify-content: space-between;
     margin: 10px;
