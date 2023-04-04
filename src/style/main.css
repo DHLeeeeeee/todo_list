@@ -47,8 +47,8 @@
   display: none; /* 크롬, 사파리, 오페라, 엣지 */
 }
 
-.todoList {
-  overflow: hidden;
+.todoItm.on label {
+  text-decoration: line-through;
 }
 
 .todoItm {
