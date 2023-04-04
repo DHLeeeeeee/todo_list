@@ -1,11 +1,9 @@
 import './style/reset.css';
 import './style/main.css';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 function App() {
   const [todos, setTodos] = useState([]); // To do Item List
-
-  const [classForTodo, setClassForTodo] = useState('todoItm');
 
   const inputValue = useRef(); // addTodo 입력값 저장
 
@@ -37,31 +35,42 @@ function App() {
 
   // Do : Done 을 체크하는 함수
   const handleCheck = (item) => {
-    const updatedTodos = todos.map((todo) => {
-      if (todo.id === item.id) {
-        return { ...todo, check: !todo.check };
-      } else {
-        return todo;
-      }
-    });
-    setTodos(updatedTodos);
+    setTodos((prevTodos) => prevTodos.map((todo) => (todo.id === item.id ? { ...todo, check: !todo.check } : todo)));
   };
 
   // 메뉴 버튼 클릭시 메뉴를 표시하는 함수
   const menuViewHandler = (id) => {
-    // 클릭 된 item의 id 값을 받아온다
-    setTodos(
-      todos.map((todo) => {
-        // 모든 todo item을 체크해서
-        if (todo.id === id) {
-          // 클릭 된 item과 같은 id 값의 todo item을 찾음
-          return { ...todo, menu: !todo.menu }; // 해당 item 의 현재 menu 값을 반대로 돌려 메뉴를 표시할지 말지 선택함
-        } else {
-          return { ...todo, menu: false }; // 다른 id의 item들의 menu 값을 false로 바꿔서 메뉴가 동시에 여러개가 보이는 것을 방지
-        }
-      })
-    );
+    setTodos(todos.map((todo) => (todo.id === id ? { ...todo, menu: !todo.menu } : { ...todo, menu: false })));
   };
+
+  // 열려있는 메뉴 참조 값
+  const wrapperRef = useRef(null);
+
+  // 다른 곳을 클릭했을 때 메뉴를 닫는 함수
+  const handleClickOutside = useCallback((event) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      // 메뉴가 열려있고 && 클릭한 곳이 메뉴가 아닐때
+      setTodos(
+        (
+          todos // 새로 이전 To do를 가져와서 menu를 닫고 배열을 생성함
+        ) =>
+          todos.map((todo) => {
+            if (todo.menu) {
+              return { ...todo, menu: false };
+            }
+            return todo;
+          })
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClick = (event) => handleClickOutside(event);
+    document.addEventListener('mousedown', handleClick);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, [handleClickOutside]);
 
   // 수정 모드 진입 시 포커싱을 위한 참조
   const editRef = useRef(null);
@@ -123,12 +132,14 @@ function App() {
     setTodos(newTodo);
   };
 
+  // check 된 요소 삭제 함수
   const deleteCheck = (e) => {
     e.preventDefault();
     const newTodo = todos.filter((todo) => todo.check === false);
     setTodos(newTodo);
   };
 
+  // 전부 삭제 함수
   const deleteAll = (e) => {
     e.preventDefault();
     setTodos([]);
@@ -145,9 +156,11 @@ function App() {
       </header>
 
       {/* To do 입력 */}
-      <form className='addTodo' action=''>
+      <form className='addTodo' onSubmit={handleAddTodo}>
         <input type='text' ref={inputValue} />
-        <button onClick={handleAddTodo}>Add Todo</button>
+        <button type='button' onClick={handleAddTodo}>
+          Add To-Do
+        </button>
       </form>
 
       {/* To do 리스트 */}
@@ -168,7 +181,14 @@ function App() {
                 />
               ) : (
                 // To do 텍스트
-                <label htmlFor={`check${it.id}`} style={{ flex: '1', textAlign: 'center', cursor: 'pointer' }}>
+                <label
+                  htmlFor={`check${it.id}`}
+                  style={{
+                    flex: '1',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    textDecoration: it.check ? 'line-through' : 'none',
+                  }}>
                   {it.content}
                 </label>
               )}
@@ -176,7 +196,7 @@ function App() {
               {/* 메뉴 버튼 */}
               <button onClick={() => menuViewHandler(it.id)}>메뉴</button>
               {it.menu && (
-                <ul className='todoMenu'>
+                <ul className='todoMenu' ref={wrapperRef}>
                   <li>
                     <button onClick={() => editHandler(it.id)}>수정</button>
                   </li>
