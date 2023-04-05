@@ -3,14 +3,20 @@ import IconButton from './IconButton';
 
 const Todolist = ({ todos, setTodos }) => {
   // Do : Done 을 체크하는 함수
-  const handleCheck = (item) => {
-    setTodos((prevTodos) => prevTodos.map((todo) => (todo.id === item.id ? { ...todo, check: !todo.check } : todo)));
-  };
+  const handleCheck = useCallback(
+    (item) => {
+      setTodos((prevTodos) => prevTodos.map((todo) => (todo.id === item.id ? { ...todo, check: !todo.check } : todo)));
+    },
+    [setTodos]
+  );
 
   // 메뉴 버튼 클릭시 메뉴를 표시하는 함수
-  const menuViewHandler = (id) => {
-    setTodos(todos.map((todo) => (todo.id === id ? { ...todo, menu: !todo.menu } : { ...todo, menu: false })));
-  };
+  const menuViewHandler = useCallback(
+    (id) => {
+      setTodos(todos.map((todo) => (todo.id === id ? { ...todo, menu: !todo.menu } : { ...todo, menu: false })));
+    },
+    [todos]
+  );
 
   // 열려있는 메뉴 참조 값
   const wrapperRef = useRef(null);
@@ -48,20 +54,20 @@ const Todolist = ({ todos, setTodos }) => {
   const editRef = useRef(null);
 
   // 수정 모드일때 P 태그를 Input 태그로 변경하는 함수
-  const editHandler = (id) => {
-    // 클릭 된 item의 id 값을 받아온다
-    setTodos(
-      todos.map((todo) => {
-        // 모든 todo item을 체크해서
-        if (todo.id === id) {
-          // 클릭 된 item과 같은 id 값의 todo item을 찾음
-          return { ...todo, edit: true, menu: false }; // 해당 item 의 edit 값을 true로 변경하여 수정모드로 진입 동시에 menu 값을 false로 변경해서 닫는다.
-        } else {
-          return todo;
-        }
-      })
-    );
-  };
+  const editHandler = useCallback(
+    (id) => {
+      setTodos(
+        todos.map((todo) => {
+          if (todo.id === id) {
+            return { ...todo, edit: true, menu: false };
+          } else {
+            return todo;
+          }
+        })
+      );
+    },
+    [todos]
+  );
 
   // 수정 모드일때 Input 태그에 바로 포커싱
   useEffect(() => {
@@ -71,39 +77,39 @@ const Todolist = ({ todos, setTodos }) => {
   }, [todos]);
 
   // 현재 To Do Item이 수정 모드 일경우 엔터를 눌렀을 때 수정된 값으로 바꿔주는 함수
-  const handleKeyDown = (event, id) => {
-    if (event.key === 'Enter') {
-      const trimmedValue = event.target.value.trim();
-      setTodos(
-        todos.map((todo) => {
-          if (todo.id === id) {
-            return { ...todo, content: trimmedValue, edit: false };
-          } else {
-            return todo;
-          }
-        })
-      );
-    }
-  };
+  const handleKeyDown = useCallback(
+    (event, id) => {
+      if (event.key === 'Enter') {
+        const trimmedValue = event.target.value.trim();
+        setTodos((prevTodos) => prevTodos.map((todo) => (todo.id === id ? { ...todo, content: trimmedValue, edit: false } : todo)));
+      }
+    },
+    [setTodos]
+  );
 
   // 수정 중에 포커싱 해제되면 수정
-  const handleBlur = (id, value) => {
-    // 수정 중인 아이템인 경우에만 실행
-    const editingItem = todos.find((item) => item.id === id && item.edit);
-    if (editingItem) {
-      // 입력값이 빈 문자열이 아닐 경우에만 동작
-      const trimmedValue = value.trim();
-      if (trimmedValue !== '') {
-        setTodos(todos.map((item) => (item.id === id ? { ...item, content: trimmedValue, edit: false } : item)));
+  const handleBlur = useCallback(
+    (id, value) => {
+      // 수정 중인 아이템인 경우에만 실행
+      const editingItem = todos.find((item) => item.id === id && item.edit);
+      if (editingItem) {
+        // 입력값이 빈 문자열이 아닐 경우에만 동작
+        const trimmedValue = value.trim();
+        if (trimmedValue !== '') {
+          setTodos(todos.map((item) => (item.id === id ? { ...item, content: trimmedValue, edit: false } : item)));
+        }
       }
-    }
-  };
+    },
+    [todos]
+  );
 
   // 삭제 버튼 클릭시 해당 할 일 요소 삭제하는 함수
-  const deleteHandler = (id) => {
-    const newTodo = todos.filter((it) => it.id !== id);
-    setTodos(newTodo);
-  };
+  const deleteHandler = useCallback(
+    (id) => {
+      setTodos((prevTodos) => prevTodos.filter((it) => it.id !== id));
+    },
+    [setTodos]
+  );
 
   return (
     <section className='main'>
