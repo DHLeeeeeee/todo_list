@@ -118,7 +118,7 @@ input {
   white-space: nowrap;
 
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 500;
   color: #333;
 }
 
@@ -128,6 +128,9 @@ input {
 
 .todoItm input[type='text'] {
   text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
 }
 
 .todoItm input[type='checkbox'] {
@@ -144,8 +147,16 @@ input {
   background: #fff;
 }
 
+.todoMenu li:last-child span {
+  color: #ca2247;
+}
+
 .clearMenu {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.clearMenu span {
+  color: #ca2247;
 }
