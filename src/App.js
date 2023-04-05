@@ -147,24 +147,24 @@ function App() {
 
   return (
     <div className='wrap'>
-      <button onClick={() => console.log(todos)}>TEST</button>
+      {/* <button onClick={() => console.log(todos)}>TEST</button> */}
 
       {/* 헤더 */}
       <header className='header'>
-        <h1>Todo list</h1>
+        <h1>TO DO LIST</h1>
         <p>2023.03.30</p>
+
+        {/* To do 입력 */}
+        <form className='addTodo' onSubmit={handleAddTodo}>
+          <input type='text' ref={inputValue} placeholder='Add to do' />
+          <button type='button' onClick={handleAddTodo}>
+            <span class='material-symbols-rounded'>add</span>
+          </button>
+        </form>
       </header>
 
-      {/* To do 입력 */}
-      <form className='addTodo' onSubmit={handleAddTodo}>
-        <input type='text' ref={inputValue} />
-        <button type='button' onClick={handleAddTodo}>
-          Add To-Do
-        </button>
-      </form>
-
       {/* To do 리스트 */}
-      <section className='todo'>
+      <section className='main'>
         <ul className='todoList'>
           {todos.map((it) => (
             <li className={it.check ? 'todoItm on' : 'todoItm'} key={it.id}>
@@ -181,27 +181,24 @@ function App() {
                 />
               ) : (
                 // To do 텍스트
-                <label
-                  htmlFor={`check${it.id}`}
-                  style={{
-                    flex: '1',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    textDecoration: it.check ? 'line-through' : 'none',
-                  }}>
-                  {it.content}
-                </label>
+                <label htmlFor={`check${it.id}`}>{it.content}</label>
               )}
 
               {/* 메뉴 버튼 */}
-              <button onClick={() => menuViewHandler(it.id)}>메뉴</button>
+              <button onClick={() => menuViewHandler(it.id)}>
+                <span class='material-symbols-rounded'>more_horiz</span>
+              </button>
               {it.menu && (
                 <ul className='todoMenu' ref={wrapperRef}>
                   <li>
-                    <button onClick={() => editHandler(it.id)}>수정</button>
+                    <button onClick={() => editHandler(it.id)}>
+                      <span class='material-symbols-rounded'>edit</span>
+                    </button>
                   </li>
                   <li>
-                    <button onClick={() => deleteHandler(it.id)}>삭제</button>
+                    <button onClick={() => deleteHandler(it.id)}>
+                      <span class='material-symbols-rounded'>delete</span>
+                    </button>
                   </li>
                 </ul>
               )}
@@ -212,8 +209,12 @@ function App() {
 
       {/* 조건 삭제 메뉴 */}
       <form className='clearMenu' action=''>
-        <button onClick={(e) => deleteCheck(e)}>Clear checked</button>
-        <button onClick={(e) => deleteAll(e)}>Clear All</button>
+        <button onClick={(e) => deleteCheck(e)}>
+          <span class='material-symbols-rounded'>unpublished</span>
+        </button>
+        <button onClick={(e) => deleteAll(e)}>
+          <span class='material-symbols-rounded'>delete_forever</span>
+        </button>
       </form>
     </div>
   );
