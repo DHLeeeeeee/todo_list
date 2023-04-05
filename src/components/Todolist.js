@@ -15,7 +15,7 @@ const Todolist = ({ todos, setTodos }) => {
     (id) => {
       setTodos(todos.map((todo) => (todo.id === id ? { ...todo, menu: !todo.menu } : { ...todo, menu: false })));
     },
-    [todos]
+    [setTodos, todos]
   );
 
   // 열려있는 메뉴 참조 값
@@ -66,7 +66,7 @@ const Todolist = ({ todos, setTodos }) => {
         })
       );
     },
-    [todos]
+    [setTodos, todos]
   );
 
   // 수정 모드일때 Input 태그에 바로 포커싱
@@ -100,7 +100,7 @@ const Todolist = ({ todos, setTodos }) => {
         }
       }
     },
-    [todos]
+    [setTodos, todos]
   );
 
   // 삭제 버튼 클릭시 해당 할 일 요소 삭제하는 함수
@@ -133,9 +133,8 @@ const Todolist = ({ todos, setTodos }) => {
             )}
 
             {/* 메뉴 버튼 */}
-            <button onClick={() => menuViewHandler(it.id)}>
-              <span class='material-symbols-rounded'>more_horiz</span>
-            </button>
+            <IconButton onClick={() => menuViewHandler(it.id)} icon='more_horiz' />
+
             {it.menu && (
               <ul className='todoMenu' ref={wrapperRef}>
                 <li>
